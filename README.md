@@ -1,3 +1,3 @@
-# TrueIntake AI – DSID Predictor
+# TrueIntake AI Frontend
 
-This is a static frontend to estimate measured nutrient content based on DSID regression data. Connects to a FastAPI backend.
+This is the updated frontend for TrueIntake AI connected to the Render backend.
