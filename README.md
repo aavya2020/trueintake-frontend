@@ -1,3 +1,3 @@
-# TrueIntake AI Frontend
+# TrueIntake AI Frontend with Age Group
 
-This is the updated frontend for TrueIntake AI connected to the Render backend.
+This version supports selecting supplement type (Adult vs. Children).

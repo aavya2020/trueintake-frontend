@@ -4,18 +4,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TrueIntake AI – DSID Predictor</title>
+  <title>TrueIntake AI – Supplement Ingredient Verifier</title>
 </head>
 <body style="font-family:sans-serif; padding:2rem; max-width:600px; margin:auto;">
-  <h1>TrueIntake AI: Nutrient Content Predictor</h1>
-  <p>Enter a nutrient name and label claim to estimate the actual amount based on DSID data.</p>
+  <h1>TrueIntake AI: Supplement Ingredient Verifier</h1>
+  <p>Enter the ingredient amount listed on your dietary supplement label to estimate actual intake based on analytical testing data from NIH/USDA.</p>
 
-  <label>Nutrient Name:<br/>
-    <input type="text" id="nutrient" placeholder="e.g., Vitamin B-6" style="width:100%; padding:0.5rem;"/>
+  <label>Select Ingredient:<br/>
+    <select id="nutrient" style="width:100%; padding:0.5rem;">
+      <option value="ALA">ALA</option><option value="Calcium">Calcium</option><option value="Folic Acid">Folic Acid</option><option value="Iodine">Iodine</option><option value="Iron">Iron</option><option value="Manganese">Manganese</option><option value="Riboflavin">Riboflavin</option><option value="Vitamin A, IU">Vitamin A, IU</option><option value="Vitamin B-12">Vitamin B-12</option><option value="Vitamin B-6">Vitamin B-6</option><option value="Zinc">Zinc</option>
+    </select>
   </label><br/><br/>
 
   <label>Label Claim Amount:<br/>
     <input type="number" id="label" placeholder="e.g., 50" style="width:100%; padding:0.5rem;"/>
+  </label><br/><br/>
+
+  <label>Supplement Type:<br/>
+    <select id="agegroup" style="width:100%; padding:0.5rem;">
+      <option value="Adult">Adult Multivitamin</option>
+      <option value="Children">Children's Multivitamin</option>
+    </select>
   </label><br/><br/>
 
   <button onclick="getPrediction()" style="padding:0.75rem 1.5rem;">Predict</button><br/><br/>
@@ -26,20 +35,21 @@
     async function getPrediction() {
       const nutrient = document.getElementById('nutrient').value;
       const label = document.getElementById('label').value;
+      const agegroup = document.getElementById('agegroup').value;
       const resultBox = document.getElementById('result');
 
       if (!nutrient || !label) {
-        resultBox.textContent = "Please enter both nutrient and label claim.";
+        resultBox.textContent = "Please select a nutrient and enter the label claim amount.";
         return;
       }
 
       try {
-        const res = await fetch(`https://trueintake-dsid.onrender.com/predict?nutrient=${encodeURIComponent(nutrient)}&label_claim=${label}`);
+        const res = await fetch(`https://trueintake-dsid.onrender.com/predict?nutrient=${encodeURIComponent(nutrient)}&label_claim=${label}&age_group=${agegroup}`);
         const data = await res.json();
         if (data.error) {
           resultBox.textContent = "Error: " + data.error;
         } else {
-          resultBox.textContent = `Predicted Measured Amount: ${data.predicted_measured_amount}`;
+          resultBox.textContent = `For ${agegroup} supplements, predicted measured amount of ${nutrient}: ${data.predicted_measured_amount}`;
         }
       } catch (e) {
         resultBox.textContent = "Prediction failed. Backend may be asleep or offline.";
