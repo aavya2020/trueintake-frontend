@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TrueIntake AI</title>
+</head>
+<body>
+  <h1>TrueIntake AI</h1>
+  <p>Enter the ingredient amount listed on your dietary supplement label to estimate the actual amount based on DSID analytical data.</p>
+  <label for="age_group">Select age group:</label>
+  <select id="age_group">
+    <option value="Adult">Adult</option>
+    <option value="Children_1_4">Children 1–4 years</option>
+    <option value="Children_4_plus">Children 4+ years</option>
+  </select>
+  <br><br>
+  <label for="nutrient">Enter nutrient:</label>
+  <input type="text" id="nutrient" />
+  <br><br>
+  <label for="label_claim">Enter label claim amount:</label>
+  <input type="number" id="label_claim" />
+  <br><br>
+  <button onclick="getPrediction()">Get Prediction</button>
+  <p id="result"></p>
+
+  <script>
+    async function getPrediction() {
+      const nutrient = document.getElementById("nutrient").value;
+      const labelClaim = document.getElementById("label_claim").value;
+      const ageGroup = document.getElementById("age_group").value;
+
+      const response = await fetch(`https://trueintake-dsid.onrender.com/predict?nutrient=${encodeURIComponent(nutrient)}&label_claim=${encodeURIComponent(labelClaim)}&age_group=${encodeURIComponent(ageGroup)}`);
+      const data = await response.json();
+
+      if (data.error) {
+        document.getElementById("result").innerText = `Error: ${data.error}`;
+      } else {
+        document.getElementById("result").innerText = `For ${ageGroup} supplements, predicted measured amount of ${nutrient}: ${data.predicted_measured_amount}`;
+      }
+    }
+  </script>
+</body>
+</html>
